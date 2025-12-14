@@ -1,0 +1,77 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin – Edit User{% endblock %}
+{% block content %}
+
+<div class="page-header d-flex align-items-center gap-2">
+  <h1 class="h1 mb-0">Edit User</h1>
+  <a class="btn btn-link" href="{{ url_for('admin_users') }}">Back</a>
+</div>
+
+<div class="card" id="adminUserEditRoot">
+  <!-- Form untuk menyimpan SEMUA perubahan -->
+  <form id="f_save" method="post" action="{{ url_for('admin_user_edit', uid=u.id) }}">
+    <input type="hidden" name="action" value="save_all">
+  </form>
+
+  <!-- Form tersembunyi untuk delete user -->
+  <form id="f_del_user" method="post" action="{{ url_for('admin_user_edit', uid=u.id) }}" style="display:none">
+    <input type="hidden" name="action" value="delete_user">
+  </form>
+
+  <table class="table table-compact table-edit-structure">
+    <thead>
+      <tr>
+        <th style="width:90px">No</th>
+        <th>Username</th>
+        <th style="width:160px">Role</th>
+        <th style="width:320px">Password</th>
+        <th style="width:300px">Action</th>  <!-- Save dipindahkan ke sini -->
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>No 1</td>
+
+        <!-- Username (ikut form f_save) -->
+        <td>
+          <input form="f_save" name="username" value="{{ u.username }}" required>
+        </td>
+
+        <!-- Role (ikut form f_save) -->
+        <td>
+          <select form="f_save" name="role">
+            <option value="user"  {% if u.role=='user' %}selected{% endif %}>User</option>
+            <option value="admin" {% if u.role=='admin' %}selected{% endif %}>Admin</option>
+          </select>
+        </td>
+
+        <!-- Password baru (opsional) -->
+        <td>
+          <input form="f_save" name="password" type="password" placeholder="password baru (opsional)">
+        </td>
+
+        <!-- ACTION: Delete + Save -->
+        <td>
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              id="btnDeleteUser"
+              class="btn btn-danger"
+              data-msg-del-user="Hapus user ini beserta SELURUH datanya (termasuk semua query, log, dan evaluasi)?">
+              Delete
+            </button>
+
+            <button form="f_save" type="submit" class="btn btn-primary">
+              Save
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- JS khusus halaman ini -->
+<script src="{{ url_for('static', filename='js/admin_user_edit.js') }}"></script>
+{% endblock %}

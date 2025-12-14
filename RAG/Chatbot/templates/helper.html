@@ -1,0 +1,104 @@
+{% extends "base_public.html" %}
+{% block title %}Panduan — Chatbot Sejarah Indonesia{% endblock %}
+
+{% block content %}
+
+<div class="helper-wrap">
+  <h1 class="helper-title">Panduan Pengguna</h1>
+  <p class="helper-subtitle">
+    Ikuti panduan berikut agar chatbot memberikan jawaban yang sesuai.
+  </p>
+
+  <section class="helper-section">
+    <h2>1. Cara Menggunakan</h2>
+    <ol>
+      <li>Buka <a href="{{ url_for('home') }}">Home</a> untuk mulai chat.</li>
+      <li>Login agar riwayat pertanyaan tersimpan (<a href="{{ url_for('login') }}">Login</a> / <a href="{{ url_for('register') }}">Register</a>).</li>
+      <li>Tulis pertanyaan kemudian klik <strong>Submit</strong>.</li>
+      <li>Lihat riwayat pertanyaan di <a href="{{ url_for('history') }}">Riwayat</a>.</li>
+    </ol>
+  </section>
+
+  <section class="helper-section">
+    <h2>2. Navigasi Halaman</h2>
+    <ul>
+      <li><strong>Home</strong> — lokasi chat.</li>
+      <li><strong>About</strong> — info proyek.</li>
+      <li><strong>Riwayat</strong> — daftar pertanyaan & jawaban.</li>
+      <li><strong>Helper</strong> — halaman panduan ini.</li>
+      <li><strong>Login / Logout</strong> — masuk atau keluar akun.</li>
+    </ul>
+  </section>
+
+  <section class="helper-section">
+    <h2>3. Aturan Agar Jawaban Sesuai</h2>
+    <ul>
+      <li>Tulis dengan Bahasa Indonesia.</li>
+      <li>Buat pertanyaan lengkap & jelas.</li>
+      <li>Berikan pertanyaan yang bukan opini Chatbot hanya menjawab berdasarkan dokumen.</li>
+      <li>Berikan pertanyaan 1 kali. Jangan bersamaan</li>
+      <li>Tunggu pertanyaan yang diajukan keluar dahulu jawabannya. Lalu boleh ditanyakan kembali</li>
+    </ul>
+  </section>
+
+  <div class="helper-center">
+    <a href="{{ url_for('home') }}" class="helper-btn">Kembali ke Home</a>
+  </div>
+</div>
+
+<style>
+  .helper-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px 22px;
+    border-radius: 10px;
+    border: 1px solid #e4e4e4;
+  }
+  .helper-title {
+    font-size: 22px;
+    margin-bottom: 3px;
+    font-weight: 700;
+  }
+  .helper-subtitle {
+    margin-top: 0;
+    font-size: 13px;
+    color: #666;
+  }
+  .helper-section {
+    margin-top: 18px;
+    background: #fafafa;
+    padding: 14px 16px;
+    border-radius: 5px;
+  }
+  .helper-section h2 {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .helper-section li {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .helper-center {
+    margin-top: 24px;
+    text-align: center;
+  }
+  .helper-btn {
+    background: #282828;
+    color: #fff;
+    padding: 7px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    transition: 0.18s;
+  }
+  .helper-btn:hover {
+    background: #000;
+  }
+</style>
+
+{% endblock %}

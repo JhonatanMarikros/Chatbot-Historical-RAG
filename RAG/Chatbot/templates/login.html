@@ -1,0 +1,21 @@
+{% extends "base_auth.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-frame">
+    <div class="auth-card">
+      <h3>Login</h3>
+      <form class="form" method="post">
+        <div class="row"><label>Username</label><input name="username" required></div>
+        <div class="row"><label>Password</label><input name="password" type="password" required></div>
+        <div class="actions">
+          <button class="auth-btn-full" type="submit">Login</button>
+        </div>
+        <div class="auth-help">
+          Don't have an account? <a class="btn-link" href="{{ url_for('register') }}">Register</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

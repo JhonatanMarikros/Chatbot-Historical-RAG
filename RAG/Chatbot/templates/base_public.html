@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Chatbot Sejarah Indonesia{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="margin:0;font-family:Poppins,system-ui">
+
+  <!-- toggle untuk hamburger (public top navbar) -->
+  <input id="pubnav" type="checkbox" class="navcheck" aria-hidden="true">
+
+  <header class="navbar publicbar">
+    <div class="wrap">
+      <div class="brand">Chatbot Sejarah Indonesia</div>
+
+      <!-- tombol burger (ikon dihandle via CSS ::before) -->
+      <label for="pubnav" class="nav-burger" aria-label="Toggle navigation"></label>
+
+      <nav class="nav">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a class="nav-link" href="{{ url_for('history') }}">Riwayat</a>
+        <a href="{{ url_for('helper') }}">Helper</a>
+        {% if session.get('user_id') %}
+          <span class="muted">{{ session.get('username') }}</span>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <!-- backdrop untuk menutup menu saat mobile -->
+  <label for="pubnav" class="backdrop" aria-hidden="true"></label>
+
+  <main style="padding:36px 28px;max-width:1200px;margin:0 auto">
+    {% if request.endpoint in ['login', 'register'] %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat,msg in messages %}
+            <div class="flash flash-{{cat}}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

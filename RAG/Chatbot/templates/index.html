@@ -1,0 +1,32 @@
+{% extends "base_public.html" %}
+{% block title %}Chatbot Sejarah Indonesia{% endblock %}
+{% block content %}
+<div class="container" id="chatRoot" data-username="{{ session.get('username')|default('User', true) }}">
+  <div class="page-center">
+    <div class="chat-card">
+      <div class="title">Chatbot</div>
+
+      <div class="chat-body" id="chatArea">
+        <!-- Salam awal bot ditaruh statis -->
+        <div class="chat-row">
+          <div style="text-align:center">
+            <div class="avatar">🤖</div>
+            <div class="chat-label">Chatbot</div>
+          </div>
+          <div class="bubble">Halo! Apa yang ingin Anda tanyakan tentang sejarah Indonesia?</div>
+        </div>
+      </div>
+
+      <form id="chatForm" class="chat-input"
+            data-endpoint="{{ url_for('get_response') }}"
+            data-login="{{ url_for('login') }}">
+        <input id="userInput" type="text" placeholder="Masukkan Pertanyaan" required>
+        <button id="submitBtn" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Pindahkan JS ke file eksternal -->
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

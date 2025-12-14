@@ -1,0 +1,48 @@
+{% extends "base_admin.html" %}
+{% block title %}{{ user.username }} – Queries{% endblock %}
+{% block content %}
+
+<!-- Header: Nama user di kiri, aksi di kanan -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px">
+  <h1 class="h1" style="margin:0">{{ user.username }}</h1>
+
+  <div style="display:flex; align-items:center; gap:12px">
+    <a class="btn btn-link" href="{{ url_for('admin_users') }}">Back</a>
+    <form method="post" style="margin:0"
+          action="{{ url_for('admin_user_queries_delete_all', uid=user.id) }}"
+          onsubmit="return confirm('Hapus semua query milik {{ user.username }}?');">
+      <button class="btn btn-danger">Delete All</button>
+    </form>
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width:100px">No</th>
+      <th>Pertanyaan</th>
+      <th style="width:280px">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>No {{ loop.index }}</td>
+        <td class="text-truncate" style="max-width:820px">{{ r.question }}</td>
+        <td>
+          <a class="btn btn-primary" href="{{ url_for('admin_query_detail', qid=r.id, uid=user.id) }}">Detail/Evaluasi</a>
+          <form method="post"
+                action="{{ url_for('admin_query_delete', qid=r.id) }}"
+                style="display:inline"
+                onsubmit="return confirm('Hapus query #{{ r.id }}?');">
+            <input type="hidden" name="uid" value="{{ user.id }}">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="3" class="muted">Belum ada query untuk user ini.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

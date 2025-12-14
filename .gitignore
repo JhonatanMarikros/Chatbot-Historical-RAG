@@ -1,0 +1,26 @@
+@'
+# VIRTUAL ENVIRONMENT
+.venv/
+venv/
+env/
+
+# MODEL BESAR
+models/
+*.gguf
+*.bin
+*.h5
+
+# PYTHON CACHE
+__pycache__/
+*.pyc
+
+# ENVIRONMENT
+.env
+.env.*
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+'@ | Set-Content .gitignore

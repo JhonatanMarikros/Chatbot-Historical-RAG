@@ -1,0 +1,30 @@
+{% extends "base_admin.html" %}
+{% block title %}Admin – Home{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="h1" style="margin:0">Home</h1>
+  <form method="post" action="{{ url_for('admin_users_delete_all') }}"
+        onsubmit="return confirm('Hapus SEMUA user (kecuali akun Anda)?');" style="margin:0">
+    <button class="btn btn-danger">Delete All</button>
+  </form>
+</div>
+
+<table class="table">
+  <thead><tr><th style="width:90px">No</th><th>Username</th><th>Role</th><th style="width:360px">Action</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>No {{ loop.index }}</td>
+      <td>{{ u.username }}</td>
+      <td>{{ u.role|capitalize }}</td>
+      <td>
+        <a class="btn btn-primary" href="{{ url_for('admin_user_queries', uid=u.id) }}">Detail</a>
+        <a class="btn btn-outline" href="{{ url_for('admin_user_edit', uid=u.id) }}">Edit User</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-muted">Belum ada user.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

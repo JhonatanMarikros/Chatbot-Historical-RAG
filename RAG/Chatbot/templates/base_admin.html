@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <!-- checkbox untuk toggle sidebar (mobile) -->
+  <input id="navcheck" type="checkbox" class="navcheck" aria-hidden="true">
+
+  <div class="admin-wrap">
+    <aside class="sidebar">
+      <div class="heading">Admin<br>Dashboard</div>
+      <a href="{{ url_for('admin_users') }}">Home</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="admin-main">
+      <!-- Topbar (muncul di mobile) -->
+      <div class="topbar">
+        <label for="navcheck" class="burger" aria-label="Toggle menu"></label>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat,msg in messages %}
+            <div class="flash flash-{{cat}}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- backdrop (klik untuk menutup sidebar di mobile) -->
+    <label for="navcheck" class="backdrop" aria-hidden="true"></label>
+  </div>
+</body>
+</html>

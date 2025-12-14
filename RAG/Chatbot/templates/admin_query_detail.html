@@ -1,0 +1,187 @@
+{% extends "base_admin.html" %}
+{% block title %}Detail Query{% endblock %}
+{% block content %}
+
+<style>
+  /* ====== Detail Page polish (hanya untuk halaman ini) ====== */
+  .detail-wrap{ max-width:1120px; margin:0 auto; }
+  .page-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;
+  }
+  .meta{
+    display:flex; gap:16px; flex-wrap:wrap; font-size:14px; color:#444;
+  }
+  .meta b{ color:#111; }
+
+  .card{ background:#fff; border:1px solid #e5e7eb; border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+  .card .card-h{ padding:12px 14px; border-bottom:1px solid #eef1f4; font-weight:800; }
+  .card .card-b{ padding:14px; }
+  .stack{ display:grid; gap:12px; }
+
+  /* text blocks */
+  .q-block .label{ font-size:13px; font-weight:800; color:#444; text-transform:uppercase; letter-spacing:.4px; }
+  .q-block .val{ font-size:16px; line-height:1.6; white-space:pre-wrap; }
+
+  /* KPI */
+  .kpi{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .kpi .k{ background:#f7faf7; border:1px solid #e6efe6; border-radius:10px; padding:12px; text-align:center; }
+  .kpi .k .name{ font-size:12px; letter-spacing:.4px; color:#445; text-transform:uppercase; }
+  .kpi .k .val{ font-size:22px; font-weight:900; margin-top:4px; }
+
+  /* table */
+  .table-wrap{ overflow:auto; border-radius:10px; border:1px solid #e5e7eb; }
+  .table { width:100%; border-collapse:separate; border-spacing:0; background:#fff; }
+  .table thead th{
+    position:sticky; top:0; background:#f3f7f3; z-index:1; font-weight:900; font-size:14px;
+    text-align:left; padding:10px 12px; border-bottom:1px solid #e5e7eb;
+  }
+  .table tbody td{
+    padding:10px 12px; border-top:1px solid #f2f2f2; vertical-align:top; font-size:14px;
+  }
+  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+
+  .badge{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; font-weight:800; }
+  .badge-top{ background:#e6f4dc; color:#2d6a1c; border:1px solid #cfe8be; }
+  .row-top{ background:#fbfef8; }
+  .table tbody td { word-break: break-word; }
+
+  /* small screens */
+  @media (max-width: 768px){
+    .kpi{ grid-template-columns:1fr; }
+  }
+</style>
+
+<div class="detail-wrap">
+
+  <!-- Header -->
+  <div class="page-head">
+    <div>
+      <div class="h2" style="margin:0">Detail Page</div>
+    </div>
+    <a class="btn btn-link" href="{{ back_url }}">Back</a>
+  </div>
+
+  <!-- Query & Answer -->
+  <div class="stack" style="margin-bottom:14px">
+    <div class="card q-block">
+      <div class="card-h">Pertanyaan</div>
+      <div class="card-b">
+        <div class="val">{{ q.question }}</div>
+      </div>
+    </div>
+
+    <div class="card q-block">
+      <div class="card-h">Jawaban Sistem</div>
+      <div class="card-b">
+        <div class="val">{{ q.llm_answer }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ranking Candidates (Cosine-only) -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h">Ranking Candidate (Cosine Filtering)</div>
+    <div class="card-b">
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:80px">Rank</th>
+              <th style="width:150px">Cosine</th>
+              <th style="width:90px">Top</th>
+              <th>Document / Chunk</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% set ctx = namespace(i=0) %}
+          {% for l in logs %}
+            <tr class="{% if l.is_context_final %}row-top{% endif %}">
+              <td class="mono">{{ l.rank_int }}</td>
+              <td class="mono">{{ '%.4f'|format(l.cosine_score or 0) }}</td>
+              <td>
+                {% if l.is_context_final %}
+                  {% set ctx.i = ctx.i + 1 %}
+                  <span class="badge badge-top">Top {{ ctx.i }}</span>
+                {% else %}-{% endif %}
+              </td>
+              <td>{{ l.content_preview }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evaluation ROUGE -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h">Evaluation ROUGE</div>
+    <div class="card-b">
+      {% if eval_ %}
+        <style>
+          .rouge-matrix{ width:100%; border-collapse:separate; border-spacing:0; }
+          .rouge-matrix thead th{
+            text-align:center; background:#f3f7f3; border-bottom:1px solid #e5e7eb; padding:10px 12px; font-weight:900;
+          }
+          .rouge-matrix tbody td, .rouge-matrix tbody th{
+            padding:10px 12px; border-top:1px solid #f2f2f2; font-size:14px;
+          }
+          .rouge-matrix tbody td{ text-align:center; font-weight:800; font-variant-numeric: tabular-nums; }
+          .rouge-matrix tbody th{ text-align:left; width:120px; }
+          @media (max-width:768px){ .rouge-matrix tbody td{ font-size:13px; } }
+        </style>
+
+        <table class="rouge-matrix">
+          <thead>
+            <tr>
+              <th style="width:120px">Metric</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>ROUGE-1</th>
+              <td>{{ '%.3f'|format(eval_.rouge1_p  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rouge1_r  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rouge1_f1 or 0) }}</td>
+            </tr>
+            <tr>
+              <th>ROUGE-2</th>
+              <td>{{ '%.3f'|format(eval_.rouge2_p  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rouge2_r  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rouge2_f1 or 0) }}</td>
+            </tr>
+            <tr>
+              <th>ROUGE-L</th>
+              <td>{{ '%.3f'|format(eval_.rougeL_p  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rougeL_r  or 0) }}</td>
+              <td>{{ '%.3f'|format(eval_.rougeL_f1 or 0) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      {% else %}
+        <div class="muted">Belum ada evaluasi untuk query ini.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Ground Truth form -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-h">Masukkan Jawaban Referensi/Jawaban Sebenarnya</div>
+    <div class="card-b">
+      <form method="post" class="form">
+        <div class="row">
+          <label>Jawaban Referensi (Ground Truth)</label>
+          <textarea name="reference" rows="5" required style="width:100%; border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px;"></textarea>
+        </div>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn btn-primary">Hitung ROUGE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
