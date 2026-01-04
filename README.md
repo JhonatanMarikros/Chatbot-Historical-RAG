@@ -4,8 +4,8 @@
 ### Cara Menjalankan Program:
 1. Clone repository ini
 2. Buat virtual environment: `python -m venv .venv`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Download model GGUF dari HuggingFace di https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF
+3. Install dependencies: `pip install -r requirements.txt`atau download di https://drive.google.com/drive/folders/1yG-KHCdbOJ04eOAv9AINB7Y62c66Jk3T?usp=sharing
+4. Download model GGUF dari HuggingFace di https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF atau di https://drive.google.com/drive/folders/1yG-KHCdbOJ04eOAv9AINB7Y62c66Jk3T?usp=sharing
 5. Simpan model di folder: `models\ministral_8b`
 6. Masuk .venv dengan cara `.\.venv\Scripts\activate`
 8. Jalankan: `python RAG/Chatbot/app.py`
