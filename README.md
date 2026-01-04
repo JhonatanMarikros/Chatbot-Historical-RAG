@@ -10,4 +10,3 @@
 6. Masuk .venv dengan cara `.\.venv\Scripts\activate`
 8. Jalankan: `python RAG/Chatbot/app.py`
 9. Buka browser: http://localhost:5000
-10. Online Bisa Dijalankan Di http://148.230.100.41/
